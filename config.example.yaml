@@ -261,6 +261,16 @@ routing:
   # for maximum parallel concurrency.
   # Ignored when routing.session-affinity is false.
   session-affinity-subagents: true
+  # When true, each session is routed by rendezvous hashing of its session ID over the
+  # available credentials instead of by this process's binding cache, so several replicas
+  # behind one load balancer send a session to the same credential without shared state.
+  # If that credential is unavailable the session moves to its next-ranked credential and
+  # returns when the first recovers. Subagents and forks hash their parent's ID when
+  # session-affinity-subagents is true. Round-robin spreads sessions evenly and
+  # weighted-round-robin by weight; fill-first is unchanged. Requests without an explicit
+  # session ID still use the per-process prefix matcher. Ignored when
+  # routing.session-affinity is false.
+  session-affinity-consistent-hash: false
 
 # Codex provider behavior.
 codex:

@@ -372,6 +372,17 @@ type RoutingConfig struct {
 	// When false, subagents are distributed across the credential pool via the fallback selector.
 	// Default: true. Ignored when SessionAffinity is false.
 	SessionAffinitySubagents *bool `yaml:"session-affinity-subagents,omitempty" json:"session-affinity-subagents,omitempty"`
+
+	// SessionAffinityConsistentHash routes each session by rendezvous hashing of its session
+	// identity over the available credentials instead of by this process's binding cache.
+	// Replicas behind one load balancer then pick the same credential for a session without
+	// shared state. When the chosen credential is unavailable the session moves to its
+	// next-ranked credential and returns once the first recovers. Applies to round-robin
+	// (uniform) and weighted-round-robin (by weight); fill-first is already deterministic and
+	// is left unchanged. Requests without an explicit session identity still use the
+	// per-process prefix matcher.
+	// Default: false. Ignored when SessionAffinity is false.
+	SessionAffinityConsistentHash bool `yaml:"session-affinity-consistent-hash,omitempty" json:"session-affinity-consistent-hash,omitempty"`
 }
 
 // OAuthModelAlias defines a model ID alias for a specific channel.
